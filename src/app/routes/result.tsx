@@ -28,7 +28,7 @@ const ResultPage = () => {
         }
 
         // CSV 헤더 만들기
-        const headers = ['Trial Index', 'Video', 'Selected', 'Speed A', 'Speed B', 'Timestamp'];
+        const headers = ['Trial Index', 'Video', 'Selected', 'Speed A', 'Speed B', 'Correct'];
 
         // 데이터 행 만들기
         const rows = results.map(r => [

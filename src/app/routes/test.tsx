@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
+// TODO: onReady 후에 재생 버튼 활성화
+
 import { useState } from "react"
 import { videos, type Video } from "../../constants/videos"
 import { speeds } from "../../constants/speed"
@@ -63,6 +65,7 @@ const VideoTestPage = () => {
     // const endTime = videoTestSet[currentIndex].video.start + 10;
     const PLAY_DURATION = 7;
 
+    const [isReady, setIsReady] = useState<number>(0);
     const [playStatus, setPlayStatus] = useState<'pre' | 'in' | 'A' | 'B' | 'post'>('pre');
 
     const handleNext = () => {
@@ -82,6 +85,7 @@ const VideoTestPage = () => {
         if (currentIndex < videoTestSet.length - 1) {
             setCurrentIndex(prev => prev + 1);
             setPlayStatus('pre');
+            setIsReady(0);
         } else {
             navigate('/result');
         }
@@ -129,7 +133,7 @@ const VideoTestPage = () => {
                             cursor: 'default',
                         }
                     }}
-                    disabled={playStatus !== 'pre'}
+                    disabled={playStatus !== 'pre' || isReady !== 2}
                 >
                     재생하기 ▶
                 </button>
@@ -169,6 +173,9 @@ const VideoTestPage = () => {
                             controls={false}
                             width="100%"
                             height="100%"
+                            onReady={() => {
+                                setIsReady(prev => prev + 1);
+                            }}
                             playbackRate={Number(videoTestSet[currentIndex].speed[0])}
                             onStart={() => {
                                 if (playStatus !== 'A') return;
@@ -229,6 +236,9 @@ const VideoTestPage = () => {
                             width="100%"
                             height="100%"
                             playbackRate={Number(videoTestSet[currentIndex].speed[1])}
+                            onReady={() => {
+                                setIsReady(prev => prev + 1);
+                            }}
                             onStart={() => {
                                 if (playStatus !== 'B') return;
 
