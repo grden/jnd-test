@@ -13,4 +13,4 @@ export interface TestResult {
 
 export const currentUserIdAtom = atom<string | null>(null);
 
-export const resultsFamily = atomFamily((userId: string) => atomWithStorage<TestResult[]>(`jnd-test-results-${userId}`, []));
+export const resultsFamily = atomFamily((userId: string) => atomWithStorage<Record<number, TestResult[]>>(`jnd-test-results-${userId}`, {}));

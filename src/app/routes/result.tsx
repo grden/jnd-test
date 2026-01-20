@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useAtomValue } from "jotai";
-import { currentUserIdAtom, resultsFamily } from "../../store/atoms";
+import { currentUserIdAtom, resultsFamily, type TestResult } from "../../store/atoms";
 import { Navigate, useNavigate } from "react-router-dom";
+import { videos } from "../../constants/videos";
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,12 +14,52 @@ import Paper from '@mui/material/Paper';
 
 const ResultPage = () => {
     const userId = useAtomValue(currentUserIdAtom);
-    const results = useAtomValue(resultsFamily(userId!));
+    const resultsRecord = useAtomValue(resultsFamily(userId!));
 
     const navigate = useNavigate();
 
-    if (!userId || !results) {
+    if (!userId) {
         return <Navigate to="/" />;
+    }
+
+    // Flatten results from all videos into a single array
+    const results: (TestResult & { videoName: string })[] = [];
+    Object.entries(resultsRecord).forEach(([videoId, videoResults]) => {
+        const video = videos.find(v => v.id === parseInt(videoId));
+        const videoName = video?.name || `Video ${videoId}`;
+        videoResults.forEach(result => {
+            results.push({
+                ...result,
+                videoName
+            });
+        });
+    });
+
+    if (results.length === 0) {
+        return (
+            <div css={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100vh',
+                padding: '32px',
+                gap: '20px',
+            }}>
+                <h3>아직 완료된 테스트가 없습니다.</h3>
+                <button onClick={() => navigate('/videos')} css={{
+                    width: '200px',
+                    height: '48px',
+                    border: 'none',
+                    borderRadius: '12px',
+                    backgroundColor: 'black',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                }}>영상 선택하기</button>
+            </div>
+        );
     }
 
     const downloadCSV = () => {
@@ -28,11 +69,12 @@ const ResultPage = () => {
         }
 
         // CSV 헤더 만들기
-        const headers = ['Trial Index', 'Video', 'Selected', 'Speed A', 'Speed B', 'Correct'];
+        const headers = ['Trial Index', 'Video Name', 'Video Link', 'Selected', 'Speed A', 'Speed B', 'Correct'];
 
         // 데이터 행 만들기
         const rows = results.map(r => [
             r.trialIndex + 1,
+            r.videoName,
             r.videoId,
             r.selectedSpeed,
             r.speedA,
@@ -64,27 +106,32 @@ const ResultPage = () => {
             alignItems: 'center',
             justifyContent: 'center',
             height: '100vh',
+            padding: '32px',
         }}>
             <h3 css={{ marginBottom: '30px', color: 'black' }}>참여자: {userId}</h3>
 
-            <TableContainer component={Paper} css={{ maxWidth: 800, marginBottom: 40 }}>
+            <TableContainer component={Paper} css={{ maxWidth: 1000, marginBottom: 40 }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: '#fafafa' }}>
                             <TableCell align="center" sx={{ fontWeight: 'bold' }}>#</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Video Name</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 'bold' }}>Speed A</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 'bold' }}>Speed B</TableCell>
                             <TableCell align="left" sx={{ fontWeight: 'bold' }}>Video Link</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {results.map((row) => (
+                        {results.map((row, index) => (
                             <TableRow
-                                key={row.trialIndex}
+                                key={`${row.videoId}-${row.trialIndex}-${index}`}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row" align="center">
                                     {row.trialIndex + 1}
+                                </TableCell>
+                                <TableCell align="center" sx={{ fontWeight: '600' }}>
+                                    {row.videoName}
                                 </TableCell>
                                 <TableCell align="center" sx={{
                                     backgroundColor: row.speedA === row.selectedSpeed && row.correct ? '#7ccf00' : row.speedA === row.selectedSpeed && !row.correct ? '#ff6467' : '',
@@ -96,7 +143,7 @@ const ResultPage = () => {
                                 }}>
                                     {row.speedB}
                                 </TableCell>
-                                <TableCell align="left" sx={{ color: '#888' }}>
+                                <TableCell align="left" sx={{ color: '#888', fontSize: '12px' }}>
                                     {row.videoId}
                                 </TableCell>
                             </TableRow>
@@ -119,7 +166,7 @@ const ResultPage = () => {
                     fontWeight: '500',
                 }}>CSV 다운로드</button>
                 <button onClick={() => {
-                    navigate('/');
+                    navigate('/videos');
                 }} css={{
                     width: '200px',
                     height: '48px',
@@ -130,7 +177,7 @@ const ResultPage = () => {
                     cursor: 'pointer',
                     fontSize: '16px',
                     fontWeight: '600',
-                }}>처음으로</button>
+                }}>영상 선택으로</button>
             </span>
         </div>
     );

@@ -1,23 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState } from "react";
-import { useAtom, useStore } from "jotai";
-import { currentUserIdAtom, resultsFamily } from "../../store/atoms";
+import { useAtom } from "jotai";
+import { currentUserIdAtom } from "../../store/atoms";
 import { useNavigate } from "react-router-dom";
 
 const StartPage = () => {
     const [inputValue, setInputValue] = useState('');
     const [_, setUserId] = useAtom(currentUserIdAtom);
-    const store = useStore();
+    // const store = useStore();
 
     const navigate = useNavigate();
 
     const handleStart = () => {
         const name = inputValue.trim();
         if (name) {
-            store.set(resultsFamily(name), []);
+            // store.set(resultsFamily(name), {});
             setUserId(name);
-            navigate('/test');
+            navigate('/videos');
         }
     };
 

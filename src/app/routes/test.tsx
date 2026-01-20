@@ -1,27 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
-// TODO: onReady 후에 재생 버튼 활성화
-
 import { useState } from "react"
 import { videos, type Video } from "../../constants/videos"
 import { speeds } from "../../constants/speed"
 import { useAtom, useAtomValue } from "jotai"
 import { currentUserIdAtom, resultsFamily } from "../../store/atoms"
-import { Navigate, useNavigate } from "react-router-dom"
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom"
 import ReactPlayer from "react-player"
 
-const generateVideoTestSet = (videos: Video[], speeds: string[][]): { video: Video, speed: string[] }[] => {
+const generateVideoTestSet = (video: Video, speeds: string[][]): { video: Video, speed: string[] }[] => {
     const videoTestSet: { video: Video, speed: string[] }[] = [];
 
-    videos.forEach((video) => {
-        // shuffle speeds
-        const shuffledSpeeds = shuffleList(speeds);
+    // shuffle speeds
+    const shuffledSpeeds = shuffleList(speeds);
 
-        shuffledSpeeds.forEach((speed) => {
-            videoTestSet.push({
-                video: video,
-                speed: speed
-            });
+    shuffledSpeeds.forEach((speed) => {
+        videoTestSet.push({
+            video: video,
+            speed: speed
         });
     });
 
@@ -47,23 +43,35 @@ const checkCorrect = (speedA: string, speedB: string, selectedSpeed: string) => 
 
 const VideoTestPage = () => {
     const userId = useAtomValue(currentUserIdAtom);
+    const [searchParams] = useSearchParams();
+    const videoIdParam = searchParams.get('videoId');
+    const navigate = useNavigate();
 
     if (!userId) {
         return <Navigate to="/" />;
     }
 
+    if (!videoIdParam) {
+        return <Navigate to="/videos" />;
+    }
+
+    const videoId = parseInt(videoIdParam);
+    const video = videos.find(v => v.id === videoId);
+
+    if (!video) {
+        return <Navigate to="/videos" />;
+    }
+
     const [currentIndex, setCurrentIndex] = useState(0);
     const [videoTestSet] = useState<{ video: Video, speed: string[] }[]>(() => {
-        return generateVideoTestSet(videos, speeds);
+        return generateVideoTestSet(video, speeds);
     });
     const [selected, setSelected] = useState<string | null>(null);
     const [results, setResults] = useAtom(resultsFamily(userId));
 
-    const navigate = useNavigate();
-
     const startTime = videoTestSet[currentIndex].video.start;
     // const endTime = videoTestSet[currentIndex].video.start + 10;
-    const PLAY_DURATION = 7;
+    // const playDuration = videoTestSet[currentIndex].video.duration;
 
     const [isReady, setIsReady] = useState<number>(0);
     const [playStatus, setPlayStatus] = useState<'pre' | 'in' | 'A' | 'B' | 'post'>('pre');
@@ -71,14 +79,21 @@ const VideoTestPage = () => {
     const handleNext = () => {
         if (!selected) return;
 
-        setResults([...results, {
+        const newResult = {
             trialIndex: currentIndex,
-            videoId: videoTestSet[currentIndex].video.link,
+            videoId: videoTestSet[currentIndex].video.name,
             speedA: videoTestSet[currentIndex].speed[0],
             speedB: videoTestSet[currentIndex].speed[1],
             selectedSpeed: selected!,
             correct: checkCorrect(videoTestSet[currentIndex].speed[0], videoTestSet[currentIndex].speed[1], selected!),
-        }])
+        };
+
+        // Update nested results structure
+        const videoResults = results[videoId] || [];
+        setResults({
+            ...results,
+            [videoId]: [...videoResults, newResult]
+        });
 
         setSelected(null);
 
@@ -87,7 +102,7 @@ const VideoTestPage = () => {
             setPlayStatus('pre');
             setIsReady(0);
         } else {
-            navigate('/result');
+            navigate('/videos');
         }
     }
 
@@ -181,7 +196,7 @@ const VideoTestPage = () => {
                                 if (playStatus !== 'A') return;
 
                                 // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                                const playDuration = (PLAY_DURATION / Number(videoTestSet[currentIndex].speed[0])) * 1000;
+                                const playDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[0])) * 1000;
 
                                 setTimeout(() => {
                                     setPlayStatus('in');
@@ -243,7 +258,7 @@ const VideoTestPage = () => {
                                 if (playStatus !== 'B') return;
 
                                 // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                                const realDuration = (PLAY_DURATION / Number(videoTestSet[currentIndex].speed[1])) * 1000;
+                                const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
 
                                 setTimeout(() => {
                                     setPlayStatus('post');
