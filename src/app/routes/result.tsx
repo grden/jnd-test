@@ -69,12 +69,11 @@ const ResultPage = () => {
         }
 
         // CSV 헤더 만들기
-        const headers = ['Trial Index', 'Video Name', 'Video Link', 'Selected', 'Speed A', 'Speed B', 'Correct'];
+        const headers = ['Trial Index', 'Video Name', 'Selected', 'Speed A', 'Speed B', 'Correct'];
 
         // 데이터 행 만들기
         const rows = results.map(r => [
             r.trialIndex + 1,
-            r.videoName,
             r.videoId,
             r.selectedSpeed,
             r.speedA,
@@ -110,15 +109,14 @@ const ResultPage = () => {
         }}>
             <h3 css={{ marginBottom: '30px', color: 'black' }}>참여자: {userId}</h3>
 
-            <TableContainer component={Paper} css={{ maxWidth: 1000, marginBottom: 40 }}>
+            <TableContainer component={Paper} css={{ maxWidth: 800, marginBottom: 40 }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: '#fafafa' }}>
                             <TableCell align="center" sx={{ fontWeight: 'bold' }}>#</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Video Name</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 'bold' }}>Speed A</TableCell>
                             <TableCell align="center" sx={{ fontWeight: 'bold' }}>Speed B</TableCell>
-                            <TableCell align="left" sx={{ fontWeight: 'bold' }}>Video Link</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: 'bold' }}>Video Link</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -130,9 +128,6 @@ const ResultPage = () => {
                                 <TableCell component="th" scope="row" align="center">
                                     {row.trialIndex + 1}
                                 </TableCell>
-                                <TableCell align="center" sx={{ fontWeight: '600' }}>
-                                    {row.videoName}
-                                </TableCell>
                                 <TableCell align="center" sx={{
                                     backgroundColor: row.speedA === row.selectedSpeed && row.correct ? '#7ccf00' : row.speedA === row.selectedSpeed && !row.correct ? '#ff6467' : '',
                                 }}>
@@ -143,7 +138,7 @@ const ResultPage = () => {
                                 }}>
                                     {row.speedB}
                                 </TableCell>
-                                <TableCell align="left" sx={{ color: '#888', fontSize: '12px' }}>
+                                <TableCell align="center" sx={{ color: '#888'}}>
                                     {row.videoId}
                                 </TableCell>
                             </TableRow>
