@@ -2,7 +2,7 @@
 import { useAtomValue } from "jotai";
 import { currentUserIdAtom, resultsFamily } from "../../store/atoms";
 import { Navigate, useNavigate } from "react-router-dom";
-import { videos } from "../../constants/videos";
+import { videos, type Video } from "../../constants/videos";
 import ReactPlayer from "react-player";
 
 const VideosPage = () => {
@@ -14,8 +14,8 @@ const VideosPage = () => {
         return <Navigate to="/" />;
     }
 
-    const isVideoCompleted = (videoId: number) => {
-        return results[videoId] && results[videoId].length > 0;
+    const isVideoCompleted = (video: Video) => {
+        return results[video.id] && results[video.id].length > 0;
     };
 
     return (
@@ -64,7 +64,7 @@ const VideosPage = () => {
                 gap: '24px',
             }}>
                 {videos.map((video) => {
-                    const completed = isVideoCompleted(video.id);
+                    const completed = isVideoCompleted(video);
                     return (
                         <div
                             key={video.id}

@@ -9,37 +9,65 @@ export type Video = {
 export const videos: Video[] = [
     {
         id: 1,
-        name: "최강록",
-        link: "videos/v0h0.mp4",
-        start: 45,
+        name: "오버워치",
+        link: "videos/visual_high_speech_high.mp4",
+        start: 0,
         duration: 10
     },
     {
         id: 2,
-        name: "노홍철",
-        link: "videos/v1h2.mp4",
-        start: 10,
+        name: "카메라",
+        link: "videos/visual_high_speech_low.mp4",
+        start: 0,
         duration: 8
     },
     {
         id: 3,
-        name: "문호준",
-        link: "videos/v2h2.mp4",
-        start: 85,
+        name: "연못구름",
+        link: "videos/visual_high_speech_mid.mp4",
+        start: 0,
         duration: 10
     },
     {
         id: 4,
-        name: "안세영",
-        link: "videos/v2h1.mp4",
-        start: 50,
+        name: "농구",
+        link: "videos/visual_low_speech_high.mp4",
+        start: 0,
         duration: 10
     },
     {
         id: 5,
-        name: "후덕죽",
-        link: "videos/v2h0.mp4",
-        start: 10,
+        name: "향수",
+        link: "videos/visual_low_speech_low.mp4",
+        start: 0,
+        duration: 10
+    },
+    {
+        id: 6,
+        name: "보험",
+        link: "videos/visual_low_speech_mid.mp4",
+        start: 0,
+        duration: 10
+    },
+    {
+        id: 7,
+        name: "과르디올라",
+        link: "videos/visual_mid_speech_high.mp4",
+        start: 0,
+        duration: 10
+    },
+    {
+        id: 8,
+        name: "야닝야닝",
+        link: "videos/visual_mid_speech_low.mp4",
+        start: 0,
+        duration: 10
+    },
+    {
+        id: 9,
+        name: "뉴스",
+        link: "videos/visual_mid_speech_mid.mp4",
+        start: 0,
         duration: 10
     },
 ]

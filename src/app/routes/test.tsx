@@ -192,17 +192,22 @@ const VideoTestPage = () => {
                                 setIsReady(prev => prev + 1);
                             }}
                             playbackRate={Number(videoTestSet[currentIndex].speed[0])}
-                            onStart={() => {
-                                if (playStatus !== 'A') return;
-
-                                // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                                const playDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[0])) * 1000;
-
+                            onEnded={() => {
                                 setTimeout(() => {
-                                    setPlayStatus('in');
-                                    setTimeout(() => setPlayStatus('B'), 1000);
-                                }, playDuration);
+                                    setPlayStatus('B');
+                                }, 1000);
                             }}
+                        // onStart={() => {
+                        //     if (playStatus !== 'A') return;
+
+                        //     // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
+                        //     const playDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[0])) * 1000;
+
+                        //     setTimeout(() => {
+                        //         setPlayStatus('in');
+                        //         setTimeout(() => setPlayStatus('B'), 1000);
+                        //     }, playDuration);
+                        // }}
                         />
                     </div>
                     <button onClick={() => { setSelected(videoTestSet[currentIndex].speed[0]); }} css={{
@@ -254,16 +259,19 @@ const VideoTestPage = () => {
                             onReady={() => {
                                 setIsReady(prev => prev + 1);
                             }}
-                            onStart={() => {
-                                if (playStatus !== 'B') return;
-
-                                // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                                const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
-
-                                setTimeout(() => {
-                                    setPlayStatus('post');
-                                }, realDuration);
+                            onEnded={() => {
+                                setPlayStatus('post');
                             }}
+                            // onStart={() => {
+                            //     if (playStatus !== 'B') return;
+
+                            //     // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
+                            //     const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
+
+                            //     setTimeout(() => {
+                            //         setPlayStatus('post');
+                            //     }, realDuration);
+                            // }}
                         />
                     </div>
                     <button onClick={() => { setSelected(videoTestSet[currentIndex].speed[1]); }} css={{
