@@ -83,15 +83,15 @@ const VideosPage = () => {
                             }}
                         >
                             <div css={{
+                                height: '100%',
                                 width: '100%',
                                 aspectRatio: '16/9',
                                 backgroundColor: 'black',
-                                position: 'relative',
                             }}>
                                 <ReactPlayer
                                     src={video.link}
                                     width="100%"
-                                    height="100%"
+                                    {...(video.id !== 8 && { height: "100%" })}
                                     playing={false}
                                     controls={false}
                                 />
