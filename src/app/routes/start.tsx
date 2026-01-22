@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState } from "react";
-import { useAtom, useStore } from "jotai";
+import { useSetAtom, useStore } from "jotai";
 import { currentUserIdAtom, goResultsFamily } from "../../store/atoms";
 import { useNavigate } from "react-router-dom";
 
 const StartPage = () => {
     const [inputValue, setInputValue] = useState('');
-    const [_, setUserId] = useAtom(currentUserIdAtom);
+    const setUserId = useSetAtom(currentUserIdAtom);
     const store = useStore();
 
     const navigate = useNavigate();

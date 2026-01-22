@@ -1,4 +1,3 @@
-import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { atomFamily } from 'jotai-family'
 
@@ -11,12 +10,12 @@ export interface TestResult {
     correct: boolean;
 }
 
-export const currentUserIdAtom = atom<string | null>(null);
+export const currentUserIdAtom = atomWithStorage<string | null>('jnd-user-id', null, undefined, { getOnInit: true },);
 
 // Storage validation helper
 const createValidatedStorage = <T,>(key: string, initialValue: T) => {
     return atomWithStorage<T>(
-        key, 
+        key,
         initialValue,
         {
             getItem: (key, initialValue) => {
@@ -26,12 +25,12 @@ const createValidatedStorage = <T,>(key: string, initialValue: T) => {
                         return initialValue;
                     }
                     const parsed = JSON.parse(storedValue);
-                    
+
                     // Validate structure for Record<number, TestResult[]>
                     if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
                         return parsed as T;
                     }
-                    
+
                     // Invalid data, return initial value
                     console.warn(`Invalid data in localStorage for key ${key}, resetting to initial value`);
                     localStorage.removeItem(key);
@@ -60,7 +59,7 @@ const createValidatedStorage = <T,>(key: string, initialValue: T) => {
     );
 };
 
-export const resultsFamily = atomFamily((userId: string) => 
+export const resultsFamily = atomFamily((userId: string) =>
     createValidatedStorage<Record<number, TestResult[]>>(`jnd-test-results-2-${userId}`, {})
 );
 
@@ -77,12 +76,12 @@ const createValidatedArrayStorage = (key: string) => {
                         return initialValue;
                     }
                     const parsed = JSON.parse(storedValue);
-                    
+
                     // Validate structure for TestResult[]
                     if (Array.isArray(parsed)) {
                         return parsed as TestResult[];
                     }
-                    
+
                     // Invalid data, return initial value
                     console.warn(`Invalid data in localStorage for key ${key}, resetting to initial value`);
                     localStorage.removeItem(key);
@@ -112,6 +111,6 @@ const createValidatedArrayStorage = (key: string) => {
 };
 
 // Go 영상 전용 결과 atom
-export const goResultsFamily = atomFamily((userId: string) => 
+export const goResultsFamily = atomFamily((userId: string) =>
     createValidatedArrayStorage(`jnd-go-test-results-2-${userId}`)
 );

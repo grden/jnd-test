@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { useAtomValue } from "jotai";
+import { useAtomValue, useAtom } from "jotai";
 import { currentUserIdAtom, resultsFamily } from "../../store/atoms";
 import { Navigate, useNavigate } from "react-router-dom";
 import { videos, type Video } from "../../constants/videos";
 import ReactPlayer from "react-player";
 
 const VideosPage = () => {
-    const userId = useAtomValue(currentUserIdAtom);
+    const [userId, setUserId] = useAtom(currentUserIdAtom);
     const results = useAtomValue(resultsFamily(userId!));
     const navigate = useNavigate();
 
@@ -15,10 +15,15 @@ const VideosPage = () => {
     }
 
     const isVideoCompleted = (video: Video) => {
-        const safeResults = (typeof results === 'object' && results !== null && !Array.isArray(results)) 
-            ? results 
+        const safeResults = (typeof results === 'object' && results !== null && !Array.isArray(results))
+            ? results
             : {};
         return safeResults[video.id] && Array.isArray(safeResults[video.id]) && safeResults[video.id].length > 0;
+    };
+
+    const handleLogout = () => {
+        setUserId(null);
+        navigate('/');
     };
 
     return (
@@ -39,41 +44,59 @@ const VideosPage = () => {
                 justifyContent: 'space-between',
                 marginBottom: '40px',
             }}>
+                <span css={{ display: 'flex', gap: '12px' }}>
+                    <button
+                        onClick={() => navigate('/result')}
+                        css={{
+                            padding: '12px 24px',
+                            borderRadius: '12px',
+                            backgroundColor: 'black',
+                            color: 'white',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            '&:hover': {
+                                backgroundColor: '#333',
+                            }
+                        }}
+                    >
+                        전체 결과 보기
+                    </button>
+                    <button
+                        onClick={() => navigate('/go')}
+                        css={{
+                            padding: '12px 24px',
+                            borderRadius: '12px',
+                            backgroundColor: '#f2f2f2',
+                            color: 'black',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            '&:hover': {
+                                backgroundColor: '#e2e2e2',
+                            },
+                        }}
+                    >
+                        단일 영상 버전
+                    </button>
+                </span>
                 <button
-                    onClick={() => navigate('/result')}
+                    onClick={handleLogout}
                     css={{
-                        padding: '12px 24px',
-                        borderRadius: '12px',
-                        backgroundColor: 'black',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        '&:hover': {
-                            backgroundColor: '#333',
-                        }
-                    }}
-                >
-                    전체 결과 보기
-                </button>
-                <button
-                    onClick={() => navigate('/go')}
-                    css={{
-                        padding: '12px 24px',
-                        borderRadius: '12px',
-                        backgroundColor: '#f2f2f2',
+                        // padding: '12px 24px',
+                        // borderRadius: '12px',
+                        backgroundColor: 'transparent',
                         color: 'black',
                         border: 'none',
                         cursor: 'pointer',
                         fontSize: '16px',
                         fontWeight: '600',
-                        '&:hover': {
-                            backgroundColor: '#e2e2e2',
-                        },
+                        textDecoration: 'underline',
                     }}
                 >
-                    단일 영상 버전
+                    로그아웃
                 </button>
             </div>
 

@@ -40,34 +40,14 @@ const checkCorrect = (speedA: string, speedB: string, selectedSpeed: string) => 
     return Number(selectedSpeed) === maxSpeed;
 }
 
-
-const VideoTestPage = () => {
-    const userId = useAtomValue(currentUserIdAtom);
-    const [searchParams] = useSearchParams();
-    const videoIdParam = searchParams.get('videoId');
-    const navigate = useNavigate();
-
-    if (!userId) {
-        return <Navigate to="/" />;
-    }
-
-    if (!videoIdParam) {
-        return <Navigate to="/videos" />;
-    }
-
-    const videoId = parseInt(videoIdParam);
-    const video = videos.find(v => v.id === videoId);
-
-    if (!video) {
-        return <Navigate to="/videos" />;
-    }
-
+const VideoTestContent = ({ userId, video, videoId }: { userId: string, video: Video, videoId: number }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [videoTestSet] = useState<{ video: Video, speed: string[] }[]>(() => {
         return generateVideoTestSet(video, speeds);
     });
     const [selected, setSelected] = useState<string | null>(null);
     const [results, setResults] = useAtom(resultsFamily(userId));
+    const navigate = useNavigate();
 
     const startTime = videoTestSet[currentIndex].video.start;
     // const endTime = videoTestSet[currentIndex].video.start + 10;
@@ -89,8 +69,8 @@ const VideoTestPage = () => {
         };
 
         // Update nested results structure with validation
-        const safeResults = (typeof results === 'object' && results !== null && !Array.isArray(results)) 
-            ? results 
+        const safeResults = (typeof results === 'object' && results !== null && !Array.isArray(results))
+            ? results
             : {};
         const videoResults = safeResults[videoId] || [];
         setResults({
@@ -265,16 +245,16 @@ const VideoTestPage = () => {
                             onEnded={() => {
                                 setPlayStatus('post');
                             }}
-                            // onStart={() => {
-                            //     if (playStatus !== 'B') return;
+                        // onStart={() => {
+                        //     if (playStatus !== 'B') return;
 
-                            //     // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                            //     const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
+                        //     // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
+                        //     const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
 
-                            //     setTimeout(() => {
-                            //         setPlayStatus('post');
-                            //     }, realDuration);
-                            // }}
+                        //     setTimeout(() => {
+                        //         setPlayStatus('post');
+                        //     }, realDuration);
+                        // }}
                         />
                     </div>
                     <button onClick={() => { setSelected(videoTestSet[currentIndex].speed[1]); }} css={{
@@ -313,6 +293,40 @@ const VideoTestPage = () => {
             }}>다음</button>
 
         </div>
+    );
+}
+
+
+const VideoTestPage = () => {
+    const userId = useAtomValue(currentUserIdAtom);
+    const [searchParams] = useSearchParams();
+
+    if (!userId) {
+        console.log('userId is null');
+        return <Navigate to="/" />;
+    }
+
+    const videoIdParam = searchParams.get('videoId');
+
+    if (!videoIdParam) {
+        console.log('videoIdParam is null');
+        return <Navigate to="/videos" />;
+    }
+
+    const videoId = parseInt(videoIdParam);
+    const video = videos.find(v => v.id === videoId);
+
+    if (!video) {
+        return <Navigate to="/videos" />;
+    }
+
+    return (
+        <VideoTestContent
+            key={videoId}
+            userId={userId}
+            video={video}
+            videoId={videoId}
+        />
     );
 }
 
