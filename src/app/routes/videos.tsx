@@ -54,6 +54,24 @@ const VideosPage = () => {
                 >
                     전체 결과 보기
                 </button>
+                <button
+                    onClick={() => navigate('/go')}
+                    css={{
+                        padding: '12px 24px',
+                        borderRadius: '12px',
+                        backgroundColor: '#f2f2f2',
+                        color: 'black',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        '&:hover': {
+                            backgroundColor: '#e2e2e2',
+                        },
+                    }}
+                >
+                    단일 영상 버전
+                </button>
             </div>
 
             <div css={{
@@ -87,6 +105,7 @@ const VideosPage = () => {
                                 width: '100%',
                                 aspectRatio: '16/9',
                                 backgroundColor: 'black',
+                                position: 'relative'
                             }}>
                                 <ReactPlayer
                                     src={video.link}

@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState } from "react"
-import { videos, type Video } from "../../constants/videos"
+import { goVideo, type Video } from "../../constants/videos"
 import { speeds } from "../../constants/speed"
 import { useAtom, useAtomValue } from "jotai"
-import { currentUserIdAtom, resultsFamily } from "../../store/atoms"
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom"
+import { currentUserIdAtom, goResultsFamily } from "../../store/atoms"
+import { Navigate, useNavigate } from "react-router-dom"
 import ReactPlayer from "react-player"
 
 const generateVideoTestSet = (video: Video, speeds: string[][]): { video: Video, speed: string[] }[] => {
@@ -41,33 +41,22 @@ const checkCorrect = (speedA: string, speedB: string, selectedSpeed: string) => 
 }
 
 
-const VideoTestPage = () => {
+const GoVideoTestPage = () => {
     const userId = useAtomValue(currentUserIdAtom);
-    const [searchParams] = useSearchParams();
-    const videoIdParam = searchParams.get('videoId');
     const navigate = useNavigate();
 
     if (!userId) {
         return <Navigate to="/" />;
     }
 
-    if (!videoIdParam) {
-        return <Navigate to="/videos" />;
-    }
-
-    const videoId = parseInt(videoIdParam);
-    const video = videos.find(v => v.id === videoId);
-
-    if (!video) {
-        return <Navigate to="/videos" />;
-    }
+    const video = goVideo[0];
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [videoTestSet] = useState<{ video: Video, speed: string[] }[]>(() => {
         return generateVideoTestSet(video, speeds);
     });
     const [selected, setSelected] = useState<string | null>(null);
-    const [results, setResults] = useAtom(resultsFamily(userId));
+    const [results, setResults] = useAtom(goResultsFamily(userId));
 
     const startTime = videoTestSet[currentIndex].video.start;
     // const endTime = videoTestSet[currentIndex].video.start + 10;
@@ -88,12 +77,8 @@ const VideoTestPage = () => {
             correct: checkCorrect(videoTestSet[currentIndex].speed[0], videoTestSet[currentIndex].speed[1], selected!),
         };
 
-        // Update nested results structure
-        const videoResults = results[videoId] || [];
-        setResults({
-            ...results,
-            [videoId]: [...videoResults, newResult]
-        });
+        // Update results array
+        setResults([...results, newResult]);
 
         setSelected(null);
 
@@ -102,7 +87,7 @@ const VideoTestPage = () => {
             setPlayStatus('pre');
             setIsReady(0);
         } else {
-            navigate('/videos');
+            navigate('/goresult');
         }
     }
 
@@ -136,7 +121,7 @@ const VideoTestPage = () => {
                     css={{
                         padding: '8px 12px',
                         borderRadius: '10px',
-                        backgroundColor: '#f2f2f2',
+                        backgroundColor: 'f2f2f2',
                         border: 'none',
                         cursor: 'pointer',
                         fontSize: '16px',
@@ -192,22 +177,17 @@ const VideoTestPage = () => {
                                 setIsReady(prev => prev + 1);
                             }}
                             playbackRate={Number(videoTestSet[currentIndex].speed[0])}
-                            onEnded={() => {
+                            onStart={() => {
+                                if (playStatus !== 'A') return;
+
+                                // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
+                                const playDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[0])) * 1000;
+
                                 setTimeout(() => {
-                                    setPlayStatus('B');
-                                }, 1000);
+                                    setPlayStatus('in');
+                                    setTimeout(() => setPlayStatus('B'), 1000);
+                                }, playDuration);
                             }}
-                        // onStart={() => {
-                        //     if (playStatus !== 'A') return;
-
-                        //     // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                        //     const playDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[0])) * 1000;
-
-                        //     setTimeout(() => {
-                        //         setPlayStatus('in');
-                        //         setTimeout(() => setPlayStatus('B'), 1000);
-                        //     }, playDuration);
-                        // }}
                         />
                     </div>
                     <button onClick={() => { setSelected(videoTestSet[currentIndex].speed[0]); }} css={{
@@ -259,19 +239,16 @@ const VideoTestPage = () => {
                             onReady={() => {
                                 setIsReady(prev => prev + 1);
                             }}
-                            onEnded={() => {
-                                setPlayStatus('post');
+                            onStart={() => {
+                                if (playStatus !== 'B') return;
+
+                                // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
+                                const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
+
+                                setTimeout(() => {
+                                    setPlayStatus('post');
+                                }, realDuration);
                             }}
-                            // onStart={() => {
-                            //     if (playStatus !== 'B') return;
-
-                            //     // 실제 재생 시간 계산: (영상길이 / 배속) * 1000ms
-                            //     const realDuration = (videoTestSet[currentIndex].video.duration / Number(videoTestSet[currentIndex].speed[1])) * 1000;
-
-                            //     setTimeout(() => {
-                            //         setPlayStatus('post');
-                            //     }, realDuration);
-                            // }}
                         />
                     </div>
                     <button onClick={() => { setSelected(videoTestSet[currentIndex].speed[1]); }} css={{
@@ -313,4 +290,4 @@ const VideoTestPage = () => {
     );
 }
 
-export default VideoTestPage;
+export default GoVideoTestPage;

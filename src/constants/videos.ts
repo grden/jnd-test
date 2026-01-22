@@ -71,3 +71,13 @@ export const videos: Video[] = [
         duration: 10
     },
 ]
+
+export const goVideo: Video[] = [
+    {
+        id: 1,
+        name: "고재영",
+        link: "videos/v1h1.mp4",
+        start: 0,
+        duration: 7
+    },
+]
