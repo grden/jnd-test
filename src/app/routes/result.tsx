@@ -24,15 +24,20 @@ const ResultPage = () => {
 
     // Flatten results from all videos into a single array
     const results: (TestResult & { videoName: string })[] = [];
-    Object.entries(resultsRecord).forEach(([videoId, videoResults]) => {
+    const safeResultsRecord = (typeof resultsRecord === 'object' && resultsRecord !== null && !Array.isArray(resultsRecord)) 
+        ? resultsRecord 
+        : {};
+    Object.entries(safeResultsRecord).forEach(([videoId, videoResults]) => {
         const video = videos.find(v => v.id === parseInt(videoId));
         const videoName = video?.name || `Video ${videoId}`;
-        videoResults.forEach(result => {
-            results.push({
-                ...result,
-                videoName
+        if (Array.isArray(videoResults)) {
+            videoResults.forEach(result => {
+                results.push({
+                    ...result,
+                    videoName
+                });
             });
-        });
+        }
     });
 
     if (results.length === 0) {

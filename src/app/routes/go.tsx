@@ -77,8 +77,9 @@ const GoVideoTestPage = () => {
             correct: checkCorrect(videoTestSet[currentIndex].speed[0], videoTestSet[currentIndex].speed[1], selected!),
         };
 
-        // Update results array
-        setResults([...results, newResult]);
+        // Update results array with validation
+        const safeResults = Array.isArray(results) ? results : [];
+        setResults([...safeResults, newResult]);
 
         setSelected(null);
 

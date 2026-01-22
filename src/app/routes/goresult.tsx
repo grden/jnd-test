@@ -23,8 +23,10 @@ const GoResultPage = () => {
     }
 
     const videoName = goVideo[0]?.name || "고재영";
+    
+    const safeResults = Array.isArray(results) ? results : [];
 
-    if (results.length === 0) {
+    if (safeResults.length === 0) {
         return (
             <div css={{
                 display: 'flex',
@@ -52,7 +54,7 @@ const GoResultPage = () => {
     }
 
     const downloadCSV = () => {
-        if (results.length === 0) {
+        if (safeResults.length === 0) {
             alert("저장할 데이터가 없습니다.");
             return;
         }
@@ -61,7 +63,7 @@ const GoResultPage = () => {
         const headers = ['Trial Index', 'Video Name', 'Selected', 'Speed A', 'Speed B', 'Correct'];
 
         // 데이터 행 만들기
-        const rows = results.map(r => [
+        const rows = safeResults.map(r => [
             r.trialIndex + 1,
             videoName,
             r.selectedSpeed,
@@ -109,7 +111,7 @@ const GoResultPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {results.map((row, index) => (
+                        {safeResults.map((row, index) => (
                             <TableRow
                                 key={`${row.videoId}-${row.trialIndex}-${index}`}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

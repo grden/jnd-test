@@ -15,7 +15,10 @@ const VideosPage = () => {
     }
 
     const isVideoCompleted = (video: Video) => {
-        return results[video.id] && results[video.id].length > 0;
+        const safeResults = (typeof results === 'object' && results !== null && !Array.isArray(results)) 
+            ? results 
+            : {};
+        return safeResults[video.id] && Array.isArray(safeResults[video.id]) && safeResults[video.id].length > 0;
     };
 
     return (

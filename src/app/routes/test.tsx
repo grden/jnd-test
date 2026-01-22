@@ -88,10 +88,13 @@ const VideoTestPage = () => {
             correct: checkCorrect(videoTestSet[currentIndex].speed[0], videoTestSet[currentIndex].speed[1], selected!),
         };
 
-        // Update nested results structure
-        const videoResults = results[videoId] || [];
+        // Update nested results structure with validation
+        const safeResults = (typeof results === 'object' && results !== null && !Array.isArray(results)) 
+            ? results 
+            : {};
+        const videoResults = safeResults[videoId] || [];
         setResults({
-            ...results,
+            ...safeResults,
             [videoId]: [...videoResults, newResult]
         });
 
