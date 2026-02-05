@@ -2,7 +2,7 @@
 import { useAtomValue, useAtom } from "jotai";
 import { currentUserIdAtom, resultsFamily } from "../../store/atoms";
 import { Navigate, useNavigate } from "react-router-dom";
-import { videos, type Video } from "../../constants/videos";
+import { gradualVideos, type Video } from "../../constants/videos";
 import ReactPlayer from "react-player";
 
 const VideosPage = () => {
@@ -107,7 +107,7 @@ const VideosPage = () => {
                 gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
                 gap: '24px',
             }}>
-                {videos.map((video) => {
+                {gradualVideos.map((video) => {
                     const completed = isVideoCompleted(video);
                     return (
                         <div

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useState, useEffect, useRef } from "react"
-import { gradualVidoes, type Video } from "../../constants/videos"
+import { gradualVideos, type Video } from "../../constants/videos"
 import { Navigate, useNavigate } from "react-router-dom"
 import ReactPlayer from "react-player"
 
@@ -52,7 +52,7 @@ const GradualTestContent = ({ video, videoIndex }: { video: Video, videoIndex: n
         }
 
         // Move to next video or back to videos page
-        if (videoIndex < gradualVidoes.length - 1) {
+        if (videoIndex < gradualVideos.length - 1) {
             navigate(`/gradual-test?videoIndex=${videoIndex + 1}`);
         } else {
             navigate('/');
@@ -204,7 +204,7 @@ const GradualTestPage = () => {
     const videoIndexParam = searchParams.get('videoIndex');
 
     const videoIndex = videoIndexParam ? parseInt(videoIndexParam) : 0;
-    const video = gradualVidoes[videoIndex];
+    const video = gradualVideos[videoIndex];
 
     if (!video) {
         return <Navigate to="/" />;

@@ -10,30 +10,30 @@ export const videos: Video[] = [
     {
         id: 1,
         name: "오버워치",
-        link: "/videos/visual_high_speech_high.mp4",
+        link: "/videos/gradual/aaa_crop.mp4",
         start: 0,
         duration: 10
     },
     {
         id: 2,
         name: "카메라",
-        link: "/videos/visual_high_speech_low.mp4",
+        link: "/videos/gradual/bbb_crop.mp4",
         start: 0,
         duration: 8
     },
     {
         id: 3,
         name: "연못구름",
-        link: "/videos/visual_high_speech_mid.mp4",
+        link: "/videos/gradual/ccc.mp4",
         start: 0,
-        duration: 10
+        duration: 6
     },
     {
         id: 4,
         name: "농구",
-        link: "/videos/visual_low_speech_high.mp4",
+        link: "/videos/gradual/ddd.mp4",
         start: 0,
-        duration: 10
+        duration: 8
     },
     {
         id: 5,
@@ -82,7 +82,7 @@ export const goVideo: Video[] = [
     },
 ]
 
-export const gradualVidoes: Video[] = [
+export const gradualVideos: Video[] = [
     {
         id: 1,
         name: "aaa",
