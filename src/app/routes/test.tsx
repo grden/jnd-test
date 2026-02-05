@@ -56,6 +56,8 @@ const VideoTestContent = ({ userId, video, videoId }: { userId: string, video: V
     const [isReady, setIsReady] = useState<number>(0);
     const [playStatus, setPlayStatus] = useState<'pre' | 'in' | 'A' | 'B' | 'post'>('pre');
 
+    const videoSRC = `${videoTestSet[currentIndex].video.link}#t=${startTime}`;
+
     const handleNext = () => {
         if (!selected) return;
 
@@ -166,7 +168,7 @@ const VideoTestContent = ({ userId, video, videoId }: { userId: string, video: V
                     }}>
                         <ReactPlayer
                             key={`A-${videoTestSet[currentIndex].video.link}-${currentIndex}`}
-                            src={`${videoTestSet[currentIndex].video.link}#t=${startTime}`}
+                            src={videoSRC}
                             playing={playStatus === 'A'}
                             controls={false}
                             width="100%"
@@ -233,7 +235,7 @@ const VideoTestContent = ({ userId, video, videoId }: { userId: string, video: V
                     }}>
                         <ReactPlayer
                             key={`B-${videoTestSet[currentIndex].video.link}-${currentIndex}`}
-                            src={`${videoTestSet[currentIndex].video.link}#t=${startTime}`}
+                            src={videoSRC}
                             playing={playStatus === 'B'}
                             controls={false}
                             width="100%"
